@@ -64,7 +64,8 @@ def DC(ccos,ssin):
     return DC
 
 DC1 = DC(ccos(elements[elementnumbercheck]),ssin(elements[elementnumbercheck]))
-
+#print(DC1)
+#print(DC1.T)
 '''
 def div(matrixDC):
     m00 = matrixDC[0][0]
@@ -94,7 +95,7 @@ plt.ylabel('Dlugosc [m]')
 plt.show()
 '''
 
-def matrixk(x):
+def matrixk():
     matrixi = np.array([[1, 0, -1, 0],
                         [0, 0, 0, 0],
                         [-1, 0, 1, 0],
@@ -107,11 +108,11 @@ def matrixk(x):
 def matrixkprim(DC,k,x):
     E = 2 * (10 ** (11))
     A = 3.14 * (10 ** (-4))
-    l =l = math.sqrt((x[3]-x[1])**2+(x[4]-x[2])**2)
-    matrixkprim = ((A*E)/l)*(np.matmul(np.transpose(DC),k,DC))
+    l = math.sqrt((x[3]-x[1])**2+(x[4]-x[2])**2)
+    matrixkprim = ((A*E)/l)*(np.matmul(np.matmul(np.transpose(DC),k), DC))
     return matrixkprim
 
-k1 = matrixk(elements[elementnumbercheck])
+k1 = matrixk()
 
 print(matrixkprim(DC1,k1,elements[elementnumbercheck]))
 
@@ -120,7 +121,7 @@ def spr(x,ssin,ccos):
     E = 2 * (10 ** (11))
     A = 3.14 * (10 ** (-4))
     l = math.sqrt((x[3]-x[1])**2+(x[4]-x[2])**2)
-    spr = ((A*E)/(l))*np.array([[ccos*ccos,ssin*ccos,-ccos*ccos,-ssin*ccos],
+    spr = ((A*E)/l)*np.array([[ccos*ccos,ssin*ccos,-ccos*ccos,-ssin*ccos],
                                [ssin*ccos,ssin*ssin,-ssin*ccos,-ssin*ssin],
                                [-ccos*ccos,-ssin*ccos,ccos*ccos,ssin*ccos],
                                [-ssin*ccos,-ssin*ssin,ssin*ccos,ssin*ssin]])
