@@ -1,7 +1,7 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
-from numpy.linalg import matrix_power
+
 
 elementnumbercheck = 1
 
@@ -15,10 +15,8 @@ for element in elements:
     elif maxvalue < element[6]:
         maxvalue = element[6]
 
-#print(maxvalue)
 
 lelements = len(elements)
-
 
 '''
 p1= (1,0,0)
@@ -28,7 +26,7 @@ p4= (4,2,0)
 p5= (5,4,0)
 '''
 
-
+'''
 e1 = (0, 0, 0, 2, 2)
 e2 = (0, 0, 2, 0, 2)
 e3 = (0, 2, 2, 0, 2.82)
@@ -36,7 +34,7 @@ e4 = (0, 2, 2, 2, 2)
 e5 = (2, 2, 2, 0, 2)
 e6 = (2, 0, 4, 0, 2)
 e7 = (2, 2, 4, 0, 2.82)
-
+'''
 
 def ssin(x):
     l = math.sqrt((x[3]-x[1])**2+(x[4]-x[2])**2)
@@ -55,8 +53,7 @@ def DC(ccos, ssin):
     return DC
 
 DC1 = DC(ccos(elements[elementnumbercheck]), ssin(elements[elementnumbercheck]))
-#print(DC1)
-#print(DC1.T)
+
 '''
 def div(matrixDC):
     m00 = matrixDC[0][0]
@@ -67,6 +64,7 @@ def div(matrixDC):
     ARR = np.array([[m00,m01],[m10,m11]])
     return ARR
 '''
+
 '''
 for i in range(lelements):
     print(ssin(elements[i]))
@@ -74,18 +72,11 @@ for i in range(lelements):
 i=0
 '''
 
-#print(div(DC1))
-
 
 for i in range(lelements):
     blank = []
     plt.plot([elements[i][1], elements[i][3]], [elements[i][2], elements[i][4]], 'b')
     i = i+1
-
-plt.title('Kratownica')
-plt.xlabel('Dlugosc [m]')
-plt.ylabel('Dlugosc [m]')
-#plt.show()
 
 
 def matrixk():
@@ -96,7 +87,6 @@ def matrixk():
     k = matrixi
     return k
 
-#print(matrixk(elements[elementnumbercheck]))
 
 def matrixkprim(DC, k, x):
     E = 2 * (10 ** 11)
@@ -106,8 +96,6 @@ def matrixkprim(DC, k, x):
     return matrixkprim
 
 k1 = matrixk()
-
-#print(matrixkprim(DC1, k1, elements[elementnumbercheck]))
 
 
 def spr(x, ssin, ccos):
@@ -156,25 +144,24 @@ for element in elements:
     Z[n][m - 1] = M[2][1]
     Z[n][m] = M[3][1]
     Z1 = Z1 + Z
-#print(Z1)
+
 
 F = np.zeros((10, 1))
 F[8][0] = 1000000
 F[9][0] = -1000000
-#print(F)
+
+
 Z1[:][0] = 0
 Z1[:][1] = 0
 Z1[:][2] = 0
-#g = 1
-#h = 2
 
-#g = element[g]
-#h = element[h]
-#print(g, h)
-for zzz in range(len(Z1)):
-    Z1[zzz][0] = 0
-    Z1[zzz][1] = 0
-    Z1[zzz][2] = 0
+i = 0
+
+for i in range(len(Z1)):
+    Z1[i][0] = 0
+    Z1[i][1] = 0
+    Z1[i][2] = 0
+
 #print(Z1)
 Z1[0][0] = 1
 Z1[1][1] = 1
@@ -182,16 +169,12 @@ Z1[2][2] = 1
 
 np.set_printoptions(formatter={'float': "{0:0.0e}".format})
 
-#print(Z1)
 U = np.linalg.pinv(Z1, -1)
-#U2 = np.linalg.matrix_power(Z1, -1)
+#U = np.linalg.matrix_power(Z1, -1)
 U = np.matmul(np.linalg.pinv(Z1, -1), F)
-#print(U)
+
 
 i = 0
-
-
-#print(U)
 
 for element in elements:
     j = int(element[5])
@@ -204,8 +187,6 @@ for element in elements:
     elements[i][3] = elements[i][3] + U[k - 1][0]
     elements[i][4] = elements[i][4] + U[k][0]
     i = i +1
-
-
 
 i = 0
 
