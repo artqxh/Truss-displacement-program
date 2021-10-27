@@ -85,7 +85,7 @@ for i in range(lelements):
 plt.title('Kratownica')
 plt.xlabel('Dlugosc [m]')
 plt.ylabel('Dlugosc [m]')
-plt.show()
+#plt.show()
 
 
 def matrixk():
@@ -156,12 +156,12 @@ for element in elements:
     Z[n][m - 1] = M[2][1]
     Z[n][m] = M[3][1]
     Z1 = Z1 + Z
-print(Z1)
+#print(Z1)
 
 F = np.zeros((10, 1))
-F[8][0] = 100000
-F[9][0] = -1000
-print(F)
+F[8][0] = 1000000
+F[9][0] = -1000000
+#print(F)
 Z1[:][0] = 0
 Z1[:][1] = 0
 Z1[:][2] = 0
@@ -175,40 +175,42 @@ for zzz in range(len(Z1)):
     Z1[zzz][0] = 0
     Z1[zzz][1] = 0
     Z1[zzz][2] = 0
-print(Z1)
+#print(Z1)
 Z1[0][0] = 1
 Z1[1][1] = 1
 Z1[2][2] = 1
 
-#np.set_printoptions(formatter={'float': "{0:0.0e}".format})
+np.set_printoptions(formatter={'float': "{0:0.0e}".format})
 
-print(Z1)
+#print(Z1)
 U = np.linalg.pinv(Z1, -1)
 #U2 = np.linalg.matrix_power(Z1, -1)
 U = np.matmul(np.linalg.pinv(Z1, -1), F)
-print(U)
+#print(U)
 
 i = 0
 
+
+#print(U)
 
 for element in elements:
     j = int(element[5])
     j = 2*j -1
     elements[i][1] = elements[i][1] + U[j - 1][0]
-    print(elements[i][1], U[j - 1][0])
+    #print(elements[i][1], U[j - 1][0])
     elements[i][2] = elements[i][2] + U[j][0]
     k = int(element[6])
     k = 2*k -1
-    elements[i][3] = elements[i][1] + U[k - 1][0]
-    elements[i][4] = elements[i][2] + U[k][0]
+    elements[i][3] = elements[i][3] + U[k - 1][0]
+    elements[i][4] = elements[i][4] + U[k][0]
     i = i +1
 
-print(elements)
 
+
+i = 0
 
 for i in range(lelements):
-    blank = []
-    plt.plot([elements[i][1], elements[i][3]], [elements[i][2], elements[i][4]], 'b')
+    plt.plot([elements[i][1], elements[i][3]], [elements[i][2], elements[i][4]], 'r')
     i = i+1
 
 plt.title('Kratownica')
