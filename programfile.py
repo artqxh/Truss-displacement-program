@@ -2,10 +2,15 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 
+#Set print options
 
-elementnumbercheck = 1
+np.set_printoptions(formatter={'float': "{0:0.0e}".format})
+
+#Import from file
 
 elements = np.loadtxt('points.txt')
+
+#Looking for points number
 
 maxvalue = 0
 for element in elements:
@@ -15,26 +20,11 @@ for element in elements:
     elif maxvalue < element[6]:
         maxvalue = element[6]
 
+#Looking for elements number
 
 lelements = len(elements)
 
-'''
-p1= (1,0,0)
-p2= (2,0,2)
-p3= (3,2,2)
-p4= (4,2,0)
-p5= (5,4,0)
-'''
-
-'''
-e1 = (0, 0, 0, 2, 2)
-e2 = (0, 0, 2, 0, 2)
-e3 = (0, 2, 2, 0, 2.82)
-e4 = (0, 2, 2, 2, 2)
-e5 = (2, 2, 2, 0, 2)
-e6 = (2, 0, 4, 0, 2)
-e7 = (2, 2, 4, 0, 2.82)
-'''
+#Cos, sin calculation
 
 def ssin(x):
     l = math.sqrt((x[3]-x[1])**2+(x[4]-x[2])**2)
@@ -44,47 +34,28 @@ def ssin(x):
 def ccos(x):
     l = math.sqrt((x[3] - x[1]) ** 2 + (x[4] - x[2]) ** 2)
     ccos = (x[3]-x[1])/l
-
     return ccos
+
+#Cosinus direction matrix
 
 def DC(ccos, ssin):
     DC = np.array([[ccos, ssin, 0, 0], [(-ssin), ccos, 0, 0], [0, 0, ccos, ssin], [0, 0, (-ssin), ccos]])
-
     return DC
 
-DC1 = DC(ccos(elements[elementnumbercheck]), ssin(elements[elementnumbercheck]))
-
-'''
-def div(matrixDC):
-    m00 = matrixDC[0][0]
-    m01 = matrixDC[0][1]
-    m10 = matrixDC[1][0]
-    m11 = matrixDC[1][1]
-
-    ARR = np.array([[m00,m01],[m10,m11]])
-    return ARR
-'''
-
-'''
-for i in range(lelements):
-    print(ssin(elements[i]))
-    print(ccos(elements[i]))
-i=0
-'''
-
+#Drawing the main truss
 
 for i in range(lelements):
     blank = []
     plt.plot([elements[i][1], elements[i][3]], [elements[i][2], elements[i][4]], 'b')
     i = i+1
 
+#Stiffness matrix
 
 def matrixk():
-    matrixi = np.array([[1, 0, -1, 0],
-                        [0, 0, 0, 0],
-                        [-1, 0, 1, 0],
-                        [0, 0, 0, 0]])
-    k = matrixi
+    k = np.array([[1, 0, -1, 0],
+                  [0, 0, 0, 0],
+                  [-1, 0, 1, 0],
+                  [0, 0, 0, 0]])
     return k
 
 
@@ -97,6 +68,7 @@ def matrixkprim(DC, k, x):
 
 k1 = matrixk()
 
+#Stiffness matrix verification
 
 def spr(x, ssin, ccos):
     E = 2 * (10 ** 11)
@@ -108,8 +80,7 @@ def spr(x, ssin, ccos):
                                [-ssin*ccos, -ssin*ssin, ssin*ccos, ssin*ssin]])
     return spr
 
-#print('\n')
-#print(spr(elements[elementnumbercheck], ssin(elements[elementnumbercheck]), ccos(elements[elementnumbercheck])))
+#Stiffness matrix after agregation
 
 Z1 = np.zeros((2*int(maxvalue), 2*int(maxvalue)))
 
@@ -145,11 +116,13 @@ for element in elements:
     Z[n][m] = M[3][1]
     Z1 = Z1 + Z
 
+#Force vector - length have to be 2*number of points
 
 F = np.zeros((10, 1))
 F[8][0] = 1000000
 F[9][0] = -1000000
 
+#Dirichlet's boundary conditions
 
 Z1[:][0] = 0
 Z1[:][1] = 0
@@ -167,15 +140,15 @@ Z1[0][0] = 1
 Z1[1][1] = 1
 Z1[2][2] = 1
 
-np.set_printoptions(formatter={'float': "{0:0.0e}".format})
+#Calculating points displacements
 
 U = np.linalg.pinv(Z1, -1)
 #U = np.linalg.matrix_power(Z1, -1)
 U = np.matmul(np.linalg.pinv(Z1, -1), F)
 
+#Creating new points after displacements
 
 i = 0
-
 for element in elements:
     j = int(element[5])
     j = 2*j -1
@@ -188,13 +161,14 @@ for element in elements:
     elements[i][4] = elements[i][4] + U[k][0]
     i = i +1
 
-i = 0
+#Drawing truss after displacements
 
+i = 0
 for i in range(lelements):
     plt.plot([elements[i][1], elements[i][3]], [elements[i][2], elements[i][4]], 'r')
     i = i+1
 
-plt.title('Kratownica')
-plt.xlabel('Dlugosc [m]')
-plt.ylabel('Dlugosc [m]')
+plt.title('Truss')
+plt.xlabel('Length [m]')
+plt.ylabel('Length [m]')
 plt.show()
