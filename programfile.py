@@ -116,11 +116,21 @@ for element in elements:
     Z[n][m] = M[3][1]
     Z1 = Z1 + Z
 
+
 #Force vector - length have to be 2*number of points
 
+#Force manually
+'''
 F = np.zeros((10, 1))
 F[8][0] = 1000000
 F[9][0] = -1000000
+'''
+
+#Import force from file
+
+F = np.loadtxt('force.txt')
+length_F = len(F)
+F = F.reshape(length_F, 1)
 
 #Dirichlet's boundary conditions
 
