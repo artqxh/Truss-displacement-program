@@ -134,25 +134,38 @@ F = F.reshape(length_F, 1)
 
 #Dirichlet's boundary conditions
 
-Z1[:][0] = 0
-Z1[:][1] = 0
-Z1[:][2] = 0
+
+P = np.loadtxt('xyz.txt', dtype='str')
 
 i = 0
+L = []
+
+for i in range(len(P)):
+    print(P[i][0])
+    if P[i][1] == 'n':
+        L.append(2*int(P[i][0])-2)
+        L.append(2*int(P[i][0])-1)
+    elif P[i][1] == 'p' and P[i][2] == 'x':
+        L.append(2 * int(P[i][0]) - 2)
+    elif P[i][1] == 'p' and P[i][2] == 'y':
+        L.append(2 * int(P[i][0]) - 1)
+
+
+i = 0
+f = 0
 
 for i in range(len(Z1)):
-    Z1[i][0] = 0
-    Z1[i][1] = 0
-    Z1[i][2] = 0
+    for f in L:
+        Z1[:][f] = 0
+        Z1[i][f] = 0
+        Z1[f][f] = 1
 
 #print(Z1)
-Z1[0][0] = 1
-Z1[1][1] = 1
-Z1[2][2] = 1
 
 #Calculating points displacements
 
 U = np.linalg.pinv(Z1, -1)
+
 #U = np.linalg.matrix_power(Z1, -1)
 U = np.matmul(np.linalg.pinv(Z1, -1), F)
 
