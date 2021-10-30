@@ -76,8 +76,6 @@ def matrixk():
 
 
 def matrixkprim(DC, k, x):
-    E = 2 * (10 ** 11)
-    A = 3.14 * (10 ** (-4))
     l = math.sqrt((x[3]-x[1])**2+(x[4]-x[2])**2)
     matrixkprim = ((A*E)/l)*(np.matmul(np.matmul(DC.T, k), DC))
     return matrixkprim
@@ -157,7 +155,7 @@ for element in elements:
     Z_P2[m - 1][m - 1] = M_P2[0][0]
     Z_P2[m - 1][m] = M_P2[1][0]
     Z_P2[m][m - 1] = M_P2[0][1]
-    Z[m][m] = M_P2[1][1]
+    Z_P2[m][m] = M_P2[1][1]
 
     Z_P2[n - 1][n - 1] = M_P2[2][2]
     Z_P2[n - 1][n] = M_P2[3][2]
@@ -258,9 +256,9 @@ for i in range(lelements):
 plt.title('Truss')
 plt.xlabel('Length [m]')
 plt.ylabel('Length [m]')
-#plt.show()
+plt.show()
 
-#print(M_ini)
+print(M_ini)
 
 u, w = la.eig(Z1, M_ini)
 
