@@ -2,13 +2,23 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 
+#Material parameters
+global E, A
+A = 8 * (10 ** (-6))
+E = 2 * (10 ** 11)
+
+#Files
+pointsfile = 'points2.txt'
+forcefile = 'force2.txt'
+dirichletsfile = 'xyz2.txt'
+
 #Set print options
 
 np.set_printoptions(formatter={'float': "{0:0.0e}".format})
 
 #Import from file
 
-elements = np.loadtxt('points.txt')
+elements = np.loadtxt(pointsfile)
 
 #Looking for points number
 
@@ -80,7 +90,6 @@ def matrixm():
     return m
 
 def matrixmprim(DC, m, x):
-    A = 3.14 * (10 ** (-4))
     l = math.sqrt((x[3]-x[1])**2+(x[4]-x[2])**2)
     ro = 7500
     matrixmprim = ((ro*A*l)/6)*(np.matmul(np.matmul(DC.T, m), DC))
@@ -91,8 +100,6 @@ m1 = matrixm()
 #Stiffness matrix verification
 
 def spr(x, ssin, ccos):
-    E = 2 * (10 ** 11)
-    A = 3.14 * (10 ** (-4))
     l = math.sqrt((x[3]-x[1])**2+(x[4]-x[2])**2)
     spr = ((A*E)/l)*np.array([[ccos*ccos, ssin*ccos, -ccos*ccos, -ssin*ccos],
                                [ssin*ccos, ssin*ssin, -ssin*ccos, -ssin*ssin],
@@ -110,7 +117,7 @@ M_ini = np.zeros((2*int(maxvalue), 2*int(maxvalue)))
 for element in elements:
     Z = np.zeros((2*int(maxvalue), 2*int(maxvalue)))
     M = matrixkprim((DC(ccos(element), ssin(element))), k1, element)
-    #print(M)
+
 
     m = int(element[5])
     n = int(element[6])
@@ -166,8 +173,6 @@ for element in elements:
     M_ini = M_ini + Z_P2
 
 
-print(M_ini)
-
 #Force vector - length have to be 2*number of points
 
 #Force manually
@@ -179,14 +184,14 @@ F[9][0] = -1000000
 
 #Import force from file
 
-F = np.loadtxt('force.txt')
+F = np.loadtxt(forcefile)
 length_F = len(F)
 F = F.reshape(length_F, 1)
 
 #Dirichlet's boundary conditions from file
 
 
-P = np.loadtxt('xyz.txt', dtype='str')
+P = np.loadtxt(dirichletsfile, dtype='str')
 
 i = 0
 L = []
@@ -211,7 +216,12 @@ for i in range(len(Z1)):
         Z1[i][f] = 0
         Z1[f][f] = 1
 
-#print(Z1)
+        #Dynamics
+
+        M_ini[:][f] = 0
+        M_ini[i][f] = 0
+        M_ini[f][f] = 1
+
 
 #Calculating points displacements
 
@@ -240,6 +250,8 @@ for element in elements:
 i = 0
 for i in range(lelements):
     plt.plot([elements[i][1], elements[i][3]], [elements[i][2], elements[i][4]], 'r')
+    plt.annotate(elements[i][5], (elements[i][1], elements[i][2]))
+    plt.annotate(elements[i][6], (elements[i][3], elements[i][4]))
     i = i+1
 
 plt.title('Truss')
