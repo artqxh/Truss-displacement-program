@@ -1,11 +1,13 @@
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+import scipy.linalg as la
 
 #Material parameters
-global E, A
+global E, A, ro
 A = 8 * (10 ** (-6))
 E = 2 * (10 ** 11)
+ro = 7860
 
 #Files
 pointsfile = 'points2.txt'
@@ -93,7 +95,6 @@ def matrixm():
 
 def matrixmprim(DC, m, x):
     l = math.sqrt((x[3]-x[1])**2+(x[4]-x[2])**2)
-    ro = 7500
     matrixmprim = ((ro*A*l)/6)*(np.matmul(np.matmul(DC.T, m), DC))
     return matrixmprim
 
@@ -257,4 +258,11 @@ for i in range(lelements):
 plt.title('Truss')
 plt.xlabel('Length [m]')
 plt.ylabel('Length [m]')
-plt.show()
+#plt.show()
+
+#print(M_ini)
+
+u, w = la.eig(Z1, M_ini)
+
+print(u)
+print(w)
