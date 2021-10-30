@@ -57,6 +57,8 @@ def DC(ccos, ssin):
 for i in range(lelements):
     blank = []
     plt.plot([elements[i][1], elements[i][3]], [elements[i][2], elements[i][4]], 'b')
+    plt.annotate(elements[i][5], (elements[i][1], elements[i][2]))
+    plt.annotate(elements[i][6], (elements[i][3], elements[i][4]))
     i = i+1
 
 #Stiffness matrix
@@ -250,8 +252,6 @@ for element in elements:
 i = 0
 for i in range(lelements):
     plt.plot([elements[i][1], elements[i][3]], [elements[i][2], elements[i][4]], 'r')
-    plt.annotate(elements[i][5], (elements[i][1], elements[i][2]))
-    plt.annotate(elements[i][6], (elements[i][3], elements[i][4]))
     i = i+1
 
 plt.title('Truss')
