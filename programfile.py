@@ -256,11 +256,21 @@ for i in range(lelements):
 plt.title('Truss')
 plt.xlabel('Length [m]')
 plt.ylabel('Length [m]')
-plt.show()
+#plt.show()
 
-print(M_ini)
+#Creating eigenvector and eigenmatrix
 
-u, w = la.eig(Z1, M_ini)
+w, u = la.eig(Z1, M_ini)
 
-print(u)
-print(w)
+#Deleting values connected with dirichlet's conditions
+
+w = np.delete(w, np.where(w == 1))
+
+#Vibration frequency
+
+f = 1/(2*np.pi)*np.sqrt(w)
+f = np.sort(f)
+
+print(f)
+
+
