@@ -85,10 +85,10 @@ k1 = matrixk()
 #Dynamics
 
 def matrixm():
-    m = np.array([[2,0,1,0],
-                 [0,2,0,1],
-                 [1,0,2,0],
-                 [0,1,0,2]])
+    m = np.array([[2, 0, 1, 0],
+                 [0, 2, 0, 1],
+                 [1, 0, 2, 0],
+                 [0, 1, 0, 2]])
     return m
 
 def matrixmprim(DC, m, x):
@@ -232,7 +232,7 @@ U = np.linalg.pinv(Z1, -1)
 U = np.matmul(np.linalg.pinv(Z1, -1), F)
 
 #Creating new points after displacements
-
+print(U)
 i = 0
 for element in elements:
     j = int(element[5])
@@ -271,6 +271,49 @@ w = np.delete(w, np.where(w == 1))
 f = 1/(2*np.pi)*np.sqrt(w)
 f = np.sort(f)
 
-print(f)
+print(u)
+
+#print(len(u))
+
+z = 0
+for z in range(len(u)-3):
+    x = u[:len(u), z:z+1]
+    print(x)
+    i = 0
+
+    for element in elements:
+        j = int(element[5])
+        j = 2*j -1
+        elements[i][1] = elements[i][1] + x[j - 1][0]
+        #print(elements[i][1], U[j - 1][0])
+        elements[i][2] = elements[i][2] + x[j][0]
+        k = int(element[6])
+        k = 2*k -1
+        elements[i][3] = elements[i][3] + x[k - 1][0]
+        elements[i][4] = elements[i][4] + x[k][0]
+        i = i +1
+
+    h = 0
+    for h in range(lelements):
+        plt.plot([elements[h][1], elements[h][3]], [elements[h][2], elements[h][4]], 'r')
+        h = h + 1
+
+    plt.title('Truss')
+    plt.xlabel('Length [m]')
+    plt.ylabel('Length [m]')
+    plt.show()
 
 
+
+'''   
+new = np.array(zeros, len(u), len(u))
+for i in range(len(u)):
+    sec = np.array()
+    for j in range(len(u)):
+        sec.append(u[j][i])
+        #print(u[i][j])
+        #print('lp:', i, j)
+    new.append(sec)
+
+print(new.T)
+    '''
