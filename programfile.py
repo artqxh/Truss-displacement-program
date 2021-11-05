@@ -21,7 +21,7 @@ np.set_printoptions(formatter={'float': "{0:0.0e}".format})
 #Import from file
 
 elements = np.loadtxt(pointsfile)
-
+elements_base = elements
 #Looking for points number
 
 maxvalue = 0
@@ -274,14 +274,19 @@ f = np.sort(f)
 print(u)
 
 #print(len(u))
-
+elements = np.loadtxt(pointsfile)
+print(elements)
 z = 0
+j = 0
+k = 0
 for z in range(len(u)-3):
     x = u[:len(u), z:z+1]
-    print(x)
+    #print(x)
     i = 0
-
+    print(x)
+    elements = np.loadtxt(pointsfile)
     for element in elements:
+
         j = int(element[5])
         j = 2*j -1
         elements[i][1] = elements[i][1] + x[j - 1][0]
@@ -297,23 +302,10 @@ for z in range(len(u)-3):
     for h in range(lelements):
         plt.plot([elements[h][1], elements[h][3]], [elements[h][2], elements[h][4]], 'r')
         h = h + 1
+    print(elements)
+
 
     plt.title('Truss')
     plt.xlabel('Length [m]')
     plt.ylabel('Length [m]')
     plt.show()
-
-
-
-'''   
-new = np.array(zeros, len(u), len(u))
-for i in range(len(u)):
-    sec = np.array()
-    for j in range(len(u)):
-        sec.append(u[j][i])
-        #print(u[i][j])
-        #print('lp:', i, j)
-    new.append(sec)
-
-print(new.T)
-    '''
