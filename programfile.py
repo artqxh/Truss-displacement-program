@@ -5,7 +5,7 @@ import scipy.linalg as la
 
 #Material parameters
 global E, A, ro
-A = 8 * (10 ** (-6))
+A = 8e-6
 E = 2 * (10 ** 11)
 ro = 7860
 
@@ -16,7 +16,8 @@ dirichletsfile = 'xyz2.txt'
 
 #Set print options
 
-np.set_printoptions(formatter={'float': "{0:0.0e}".format})
+#np.set_printoptions(formatter={'float': "{0:0.0e}".format})
+np.set_printoptions(precision=4)
 
 #Import from file
 
@@ -77,11 +78,10 @@ def matrixk():
 
 def matrixkprim(DC, k, x):
     l = math.sqrt((x[3]-x[1])**2+(x[4]-x[2])**2)
-    matrixkprim = ((A*E)/l)*(np.matmul(np.matmul(DC.T, k), DC))
+    matrixkprim = ((A*E)/l)*(np.dot(np.dot(DC.T, k), DC))
     return matrixkprim
 
 k1 = matrixk()
-
 #Dynamics
 
 def matrixm():
@@ -93,7 +93,7 @@ def matrixm():
 
 def matrixmprim(DC, m, x):
     l = math.sqrt((x[3]-x[1])**2+(x[4]-x[2])**2)
-    matrixmprim = ((ro*A*l)/6)*(np.matmul(np.matmul(DC.T, m), DC))
+    matrixmprim = ((ro*A*l)/6)*(np.dot(np.dot(DC.T, m), DC))
     return matrixmprim
 
 m1 = matrixm()
@@ -172,8 +172,9 @@ for element in elements:
     Z_P2[n][m - 1] = M_P2[2][1]
     Z_P2[n][m] = M_P2[3][1]
     M_ini = M_ini + Z_P2
+    
 
-
+M_ini = np.where(M_ini < (1*10**(-15)), 0, M_ini)
 #Force vector - length have to be 2*number of points
 
 #Force manually
@@ -224,15 +225,13 @@ for i in range(len(Z1)):
         M_ini[f][f] = 1
 
 
+
 #Calculating points displacements
 
-U = np.linalg.pinv(Z1, -1)
+U = np.dot(np.linalg.inv(Z1), F)
 
-#U = np.linalg.matrix_power(Z1, -1)
-U = np.matmul(np.linalg.pinv(Z1, -1), F)
 
 #Creating new points after displacements
-print(U)
 i = 0
 for element in elements:
     j = int(element[5])
@@ -244,7 +243,9 @@ for element in elements:
     k = 2*k -1
     elements[i][3] = elements[i][3] + U[k - 1][0]
     elements[i][4] = elements[i][4] + U[k][0]
-    i = i +1
+    
+    i = i + 1
+
 
 #Drawing truss after displacements
 
@@ -261,29 +262,31 @@ plt.ylabel('Length [m]')
 #Creating eigenvector and eigenmatrix
 
 w, u = la.eig(Z1, M_ini)
+w1, u1 = la.eig(np.dot(np.linalg.inv(M_ini),Z1))
 
-#Deleting values connected with dirichlet's conditions
-
-w = np.delete(w, np.where(w == 1))
-
-#Vibration frequency
-
-f = 1/(2*np.pi)*np.sqrt(w)
-f = np.sort(f)
+print(np.real(w))
+print(np.real(w1))
 
 print(u)
+print(u1)
+#Deleting values connected with dirichlet's conditions
+w = np.real(w)
+w = np.delete(w, np.where(w == 1))
+#Vibration frequency
 
-#print(len(u))
+f_hz = 1/(2*np.pi)*np.sqrt(w)
+f_hz = np.sort(f_hz)
+print(f_hz)
+
+'''
+
 elements = np.loadtxt(pointsfile)
-print(elements)
 z = 0
 j = 0
 k = 0
 for z in range(len(u)-3):
     x = u[:len(u), z:z+1]
-    #print(x)
     i = 0
-    print(x)
     elements = np.loadtxt(pointsfile)
     for element in elements:
 
@@ -302,10 +305,9 @@ for z in range(len(u)-3):
     for h in range(lelements):
         plt.plot([elements[h][1], elements[h][3]], [elements[h][2], elements[h][4]], 'r')
         h = h + 1
-    print(elements)
-
 
     plt.title('Truss')
     plt.xlabel('Length [m]')
     plt.ylabel('Length [m]')
     plt.show()
+'''
