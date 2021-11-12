@@ -5,14 +5,14 @@ import scipy.linalg as la
 
 #Material parameters
 global E, A, ro
-A = 8e-4
+A = 3.14e-4
 E = 2 * (10 ** 11)
 ro = 7860
 
 #Files
-pointsfile = 'points2.txt'
-forcefile = 'force2.txt'
-dirichletsfile = 'xyz2.txt'
+pointsfile = 'points.txt'
+forcefile = 'force.txt'
+dirichletsfile = 'xyz.txt'
 
 #Set print options
 
@@ -230,7 +230,6 @@ for i in range(len(Z1)):
 
 U = np.dot(np.linalg.inv(Z1), F)
 
-
 #Creating new points after displacements
 i = 0
 for element in elements:
@@ -265,27 +264,30 @@ plt.ylabel('Length [m]')
 #w, u = la.eig(Z1, M_ini)
 w, u = la.eig(np.dot(np.linalg.inv(M_ini),Z1))
 
+
+
 #Deleting values connected with dirichlet's conditions
 w = np.real(w)
 w = np.delete(w, np.where(w == 1))
 #Vibration frequency
 
 f_hz = 1/(2*np.pi)*np.sqrt(w)
-f_hz = np.sort(f_hz)
 
+f_hz = np.sort(f_hz)
+print(f_hz)
 b = []
 u = u.T
 for column in u:
     max_value = max(np.abs(column))
     column = column/max_value
     b.append(column)
-    
+      
 
 b = np.array(b)
 b = b.T
 u = b*0.1
 
-print(u)
+
 elements = np.loadtxt(pointsfile)
 z = 0
 j = 0
