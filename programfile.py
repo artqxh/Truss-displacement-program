@@ -5,7 +5,7 @@ import scipy.linalg as la
 
 #Material parameters
 global E, A, ro
-A = 8e-6
+A = 8e-4
 E = 2 * (10 ** 11)
 ro = 7860
 
@@ -247,6 +247,7 @@ for element in elements:
     i = i + 1
 
 
+
 #Drawing truss after displacements
 
 i = 0
@@ -261,14 +262,9 @@ plt.ylabel('Length [m]')
 
 #Creating eigenvector and eigenmatrix
 
-w, u = la.eig(Z1, M_ini)
-w1, u1 = la.eig(np.dot(np.linalg.inv(M_ini),Z1))
+#w, u = la.eig(Z1, M_ini)
+w, u = la.eig(np.dot(np.linalg.inv(M_ini),Z1))
 
-print(np.real(w))
-print(np.real(w1))
-
-print(u)
-print(u1)
 #Deleting values connected with dirichlet's conditions
 w = np.real(w)
 w = np.delete(w, np.where(w == 1))
@@ -276,10 +272,20 @@ w = np.delete(w, np.where(w == 1))
 
 f_hz = 1/(2*np.pi)*np.sqrt(w)
 f_hz = np.sort(f_hz)
-print(f_hz)
 
-'''
+b = []
+u = u.T
+for column in u:
+    max_value = max(np.abs(column))
+    column = column/max_value
+    b.append(column)
+    
 
+b = np.array(b)
+b = b.T
+u = b*0.1
+
+print(u)
 elements = np.loadtxt(pointsfile)
 z = 0
 j = 0
@@ -288,8 +294,9 @@ for z in range(len(u)-3):
     x = u[:len(u), z:z+1]
     i = 0
     elements = np.loadtxt(pointsfile)
+    elements2 = np.loadtxt(pointsfile)
     for element in elements:
-
+        
         j = int(element[5])
         j = 2*j -1
         elements[i][1] = elements[i][1] + x[j - 1][0]
@@ -304,10 +311,9 @@ for z in range(len(u)-3):
     h = 0
     for h in range(lelements):
         plt.plot([elements[h][1], elements[h][3]], [elements[h][2], elements[h][4]], 'r')
-        h = h + 1
+        plt.plot([elements2[h][1], elements2[h][3]], [elements2[h][2], elements2[h][4]], 'b')
 
     plt.title('Truss')
     plt.xlabel('Length [m]')
     plt.ylabel('Length [m]')
     plt.show()
-'''
