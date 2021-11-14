@@ -224,6 +224,7 @@ for i in range(len(Z1)):
         M_ini[i][f] = 0
         M_ini[f][f] = 1
 
+print("Program Finishes")
 
 
 #Calculating points displacements
@@ -319,3 +320,7 @@ for z in range(len(u)-3):
     plt.xlabel('Length [m]')
     plt.ylabel('Length [m]')
     plt.show()
+
+print("Program Finishes")
+
+
