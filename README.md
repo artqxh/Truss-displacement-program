@@ -9,3 +9,5 @@ force file - load
 Z1 vector - global static displacement vector \
 M_ini matrix - global natural vibrations matrix \
 f vector - sorted natural vibrations freq with cuted boundary conditions values 
+
+More details in project_overview.plf.
